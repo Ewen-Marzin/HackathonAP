@@ -183,18 +183,51 @@ def arrivee_camion(camion):
 ## Le rendu final ! 
 
 def quoicoubeh ():
+
     horloge =0
     camions = init_cametards()
-    heapq= fonctionIlias
+    Y=[]
+
+    pq = []
+    déplacements_camions=[[(camions[i][0],camions[i][1])] for i in range(100)]
+    
+    for i in range(100): #initialisation pour tous les camtards
+        (x1,y1) = camions[i][0],camions[i][1]
+        x = camions[i]
+        if x[4] == None : 
+            (x2,y2) = (clients[x[5]][0], clients[x[5]][1])
+        else : 
+            (y2,x2) = (usines[x[4]][0], usines[x[4]][1])
+        déplacements_camions[i].append((x2,y2))
+        y = distance(x1,y1,x2,y2)/v
+        heapq.heappush(y,i)
+
 
     while horloge <=30*24:
-        a=heapq.push_back
-        camion, horloge = a[0],a[1]
+
+        (horloge, camion) = heapq.heappop(pq)
+        x = camion
+        (x1,y1) = camion[0],camion[1]
+        if x[4] == None : 
+            (x2,y2) = (clients[x[5]][0], clients[x[5]][1])
+        else : 
+            (y2,x2) = (usines[x[4]][0], usines[x[4]][1])
+        déplacements_camions[i].append((x2,y2))
+        y = distance(x1,y1,x2,y2)/v
+        Y.append(y)
+        heapq.heappush(horloge+y,camion)
+
         arrivee_camion(camion)
         for camtarddesesmorts in camions :
             if camtarddesesmorts!=camion:
-                mouvement_camions(camtarddesesmorts)
-
+                mouvement_camion(camtarddesesmorts, Y[-2])
+        for k in range(plants.shape[0]):
+            if plants[k].init + plants[k].refill * t / 24 < plants[k].capacity:
+                plants[k].init = plants[k].init + plants[k].refill * t / 24
+        for k in range(clients.shape[0]):
+            if clients[k].bouteilles_pleines - clients[k].consumption * t / 24 != 0:
+                clients[k].bouteilles_pleines -= clients[k].consumption * t / 24
+    
 
 
 

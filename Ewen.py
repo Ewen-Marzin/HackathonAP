@@ -150,10 +150,4 @@ def evolution(camions):
     for i in range(len(camions)):
         if i != k:
             camions[i] = mouvement_camion(camions[i], t)
-    for k in range(plants.shape[0]):
-        if plants[k].init + plants[k].refill * t / 24 < plants[k].capacity:
-            plants[k].init = plants[k].init + plants[k].refill * t / 24
-    for k in range(clients.shape[0]):
-        if clients[k].bouteilles_pleines - clients[k].consumption * t / 24 != 0:
-            clients[k].bouteilles_pleines -= clients[k].consumption * t / 24
-    return camions
+
