@@ -8,6 +8,7 @@ clients = pd.read_csv("C:/Users/utilisateur/Info/hackaton/clients.csv")
 plants = pd.read_csv("C:/Users/utilisateur/Info/hackaton/plants.csv")
 
 v = 50
+temps = 0
 
 
 def map():
@@ -65,67 +66,57 @@ def mouvement_camion(camion, t):
 
 def arrivee_camion(camion):
     if camion[4] != None and camion[5] == None:
-        d = distance(
-            camion[0], camion[1], plants[camion[4]].coord_x, plants[camion[4]].coord_y
-        )
-        if d == 0:
-            camion[2] = 0
-            camion[3] = max(80, plants[camion[4]].init)
-            plants[camion[4]].init -= camion[3]
-            camion[4] = None
-            distance_client = 10 ^ 9
-            for k in range(clients.shape[0]):
-                if (
-                    clients[k].status == 1
-                    and distance(
-                        camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
-                    )
-                    < distance_client
-                ):
-                    camion[5] = k
-                    distance_client = distance(
-                        camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
-                    )
+        camion[2] = 0
+        camion[3] = max(80, plants[camion[4]].init)
+        plants[camion[4]].init -= camion[3]
+        camion[4] = None
+        distance_client = 10 ^ 9
+        for k in range(clients.shape[0]):
+            if (
+                clients[k].status == 1
+                and distance(
+                    camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
+                )
+                < distance_client
+            ):
+                camion[5] = k
+                distance_client = distance(
+                    camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
+                )
             clients[camion[5]].status = 2
             return camion
 
     elif camion[4] == None and camion[5] != None:
-        d = distance(
-            camion[0], camion[1], clients[camion[5]].coord_x, clients[camion[5]].coord_y
-        )
-        if d == 0:
-            camion[3] = min(0, camion[3] - 7 * clients[camion[5]].consumption)
-            camion[2] = max(80, camion[2] + 7 * clients[camion[5]].consumption)
-            if camion[3] == 0:
-                camion[5] = None
-                distance_usine = 10 ^ 9
-                for k in range(plants.shape[0]):
-                    if (
-                        distance(
-                            camion[0], camion[1], plants[k].coord_x, plants[k].coord_y
-                        )
-                        < distance_usine
-                    ):
-                        distance_usine = distance(
-                            camion[0], camion[1], plants[k].coord_x, plants[k].coord_y
-                        )
-                        camion[4] = k
-                return camion
-            if camion[3] != 0:
-                camion[4] = None
-                distance_client = 10 ^ 9
-                for k in range(clients.shape[0]):
-                    if (
-                        distance(
-                            camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
-                        )
-                        < distance_usine
-                    ):
-                        distance_usine = distance(
-                            camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
-                        )
-                        camion[5] = k
-                return camion
+        camion[3] = min(0, camion[3] - 7 * clients[camion[5]].consumption)
+        camion[2] = max(80, camion[2] + 7 * clients[camion[5]].consumption)
+        if camion[3] == 0:
+            camion[5] = None
+            distance_usine = 10 ^ 9
+            for k in range(plants.shape[0]):
+                if (
+                    distance(camion[0], camion[1], plants[k].coord_x, plants[k].coord_y)
+                    < distance_usine
+                ):
+                    distance_usine = distance(
+                        camion[0], camion[1], plants[k].coord_x, plants[k].coord_y
+                    )
+                    camion[4] = k
+            return camion
+        if camion[3] != 0:
+            camion[4] = None
+            distance_client = 10 ^ 9
+            for k in range(clients.shape[0]):
+                if (
+                    distance(
+                        camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
+                    )
+                    < distance_usine
+                ):
+                    distance_usine = distance(
+                        camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
+                    )
+                    camion[5] = k
+            return camion
     return camion
 
 
@@ -138,7 +129,7 @@ def arrivee_camion(camion):
 def evolution(camions):
     k = trouver_evenement_pro()[0]
     t = trouver_evenement_pro()[1]
-    camions[k] = arrivée_camion(camions[k])
+    camions[k] = arrivee_camion(camions[k])
     for i in range(len(camions)):
         if i != k:
             camions[i] = mouvement_camion(camions[i], t)
