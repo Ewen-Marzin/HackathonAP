@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import heapq
 import matplotlib.pyplot as plt
+from code.py import trouver_evenement_pro
 
 clients = pd.read_csv("C:/Users/utilisateur/Info/hackaton/clients.csv")
 plants = pd.read_csv("C:/Users/utilisateur/Info/hackaton/plants.csv")
@@ -23,7 +24,7 @@ def distance(x1, y1, x2, y2):
     return np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
 
-def mouvement_camions(camion, t):
+def mouvement_camion(camion, t):
     if camion[4] != None and camion[5] == None:
         for camion in camions:
             d = distance(
@@ -51,7 +52,7 @@ def mouvement_camions(camion, t):
     return camion
 
 
-def arrivée_camion(camion):
+def arrivee_camion(camion):
     if camion[4] != None and camion[5] == None:
         d = distance(
             camion[0], camion[1], plants[camion[4]].coord_x, plants[camion[4]].coord_y
@@ -113,5 +114,13 @@ def arrivée_camion(camion):
                         )
                         camion[5] = k
                 return camion
-
     return camion
+
+
+def evolution(camions):
+    k = trouver_evenement_pro()[0]
+    t = trouver_evenement_pro()[1]
+    camions[k] = arrivée_camion(camions[k])
+    for i in range(len(camions)):
+        if i != k:
+            camions[i] = mouvement_camion(camions[i], t)
