@@ -19,7 +19,7 @@ def évènements(camions):
         for i in range(100): #initialisation pour tous les camtards
             (x1,y1) = camions[i][0],camions[i][1]
             x = arrivee_camion(camions[i])
-            if x[4] = None : 
+            if x[4] == None : 
                 (x2,y2) = (clients[x[5]][0], clients[x[5]][1])
             else : 
                 (y2,x2) = (usines[x[4]][0], usines[x[4]][1])

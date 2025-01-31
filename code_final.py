@@ -1,47 +1,19 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import heapq
 
+## Dataframes 
 
-clients = pd.read_csv('C:/Users/utilisateur/Info/hackaton/clients.csv')     #2000 clients
 plants = pd.read_csv('C:/Users/utilisateur/Info/hackaton/plants.csv')   #20 usines
-
+clients = pd.read_csv('C:/Users/utilisateur/Info/hackaton/clients.csv')     #2000 clients
 clients["status"]=[1 for i in range (2000)]
 clients["bouteilles_pleines"]=[0 for i in range (2000)]
 
-
+## Fonctions utiles 
 
 def distance (a,b,c,d) :
     return np.sqrt((a-c)**2+(b-d)**2)
-
-
-def init_cametards():       #initialisation des camions
-    camions = [[0,0,0,0,0,0] for i in range (100)]      #(x,y,bouteilles vides, bouteilles pleines, objectif usine, objectif client)
-    for i in range (20):
-
-        stock = plants.init[i]      # remplissage des camions
-        tkt=np.floor(stock/5)
-        reste=stock-tkt
-        for j in range (i*5, i*5 +reste):
-            camions[j][0],camions[j][1] = plants.coord_x[i], plants.coord_y[i]
-            camions[j][3]=tkt+1
-        for j in range (i*5+reste, 5+i*5):
-            camions[j][0],camions[j][1] = plants.coord_x[i], plants.coord_y[i]
-            camions[j][3]=tkt
-
-        def trietpastriselectiftascapteahah(i):         # on choisit les 5 clients demandeurs les plus proches
-            res=[]
-            for c in range (2000):
-                res.append(distance(clients[c].coord_x,clients[c].coord_y,plants.coord_x[i], plants.coord_y[i]))
-            res.sort()
-            return res[:5]
-
-        tkt= trietpastriselectiftascapteahah(i)
-        for j in range (i*5, 5+i*5):
-            camions[j][5]=res[j-5*i]
-
-
-camions = init_cametards()
 
 
 def show_map ():
@@ -56,8 +28,7 @@ def show_map ():
     plt.scatter(X,Y,s=30)
     plt.show()
 
-
-
+# Fonction au final inutilisée pour trouver l'évenement suivant 
 def trouver_evenement_pro ():
     cpt=10**9
     cametarddesesmorts=camion[0]
@@ -79,9 +50,33 @@ def trouver_evenement_pro ():
         return (cametarddesesmorts, cpt/v)
 
 
+## Fonctions dans le programme final
 
+# Initialisation des camions 
+def init_cametards():       
+    camions = [[0,0,0,0,0,0] for i in range (100)]      #(x,y,bouteilles vides, bouteilles pleines, objectif usine, objectif client)
+    for i in range (20):
 
+        stock = plants.init[i]      # remplissage des camions
+        tkt=np.floor(stock/5)
+        reste=stock-tkt
+        for j in range (i*5, i*5 +reste):
+            camions[j][0],camions[j][1] = plants.coord_x[i], plants.coord_y[i]
+            camions[j][3]=tkt+1
+        for j in range (i*5+reste, 5+i*5):
+            camions[j][0],camions[j][1] = plants.coord_x[i], plants.coord_y[i]
+            camions[j][3]=tkt
 
+        def trietpastriselectiftascapteahah(i):         # on choisit les 5 clients demandeurs les plus proches
+            res=[]
+            for c in range (2000):
+                res.append(distance(clients[c].coord_x,clients[c].coord_y,plants.coord_x[i], plants.coord_y[i]))
+            res.sort()
+            return res[:5]
+
+        tkt= trietpastriselectiftascapteahah(i)
+        for j in range (i*5, 5+i*5):        # Les camions ont maintenant tous une destination !
+            camions[j][5]=res[j-5*i]
 
 
 def mouvement_camion(camion, t):
