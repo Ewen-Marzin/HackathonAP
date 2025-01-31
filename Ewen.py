@@ -91,8 +91,19 @@ def arrivee_camion(camion):
     elif camion[4] == None and camion[5] != None:
         camion[0] = clients[camion[5]].coord_x
         camion[1] = clients[camion[5]].coord_y
-        camion[3] = max(0, camion[3] - min(7 * clients[camion[5]].consumption, clients[camion[5]].capacity))
-        camion[2] = min(80, camion[2] + min(7 * clients[camion[5]].consumption, clients[camion[5]].capacity))
+        camion[3] = max(
+            0,
+            camion[3]
+            - min(7 * clients[camion[5]].consumption, clients[camion[5]].capacity),
+        )
+        camion[2] = min(
+            80,
+            camion[2]
+            + min(7 * clients[camion[5]].consumption, clients[camion[5]].capacity),
+        )
+        clients[camion[5]].bouteilles_pleines += min(
+            7 * clients[camion[5]].consumption, clients[camion[5]].capacity
+        )
         if camion[3] == 0:
             camion[5] = None
             distance_usine = 10 ^ 9
@@ -110,8 +121,9 @@ def arrivee_camion(camion):
             camion[4] = None
             distance_client = 10 ^ 9
             for k in range(clients.shape[0]):
-                if (clients[k].status == 1 and
-                    distance(
+                if (
+                    clients[k].status == 1
+                    and distance(
                         camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
                     )
                     < distance_usine
@@ -142,4 +154,6 @@ def evolution(camions):
         if plants[k].init + plants[k].refill * t / 24 < plants[k].capacity:
             plants[k].init = plants[k].init + plants[k].refill * t / 24
     for k in range(clients.shape[0]):
-        if clients[k].
+        if clients[k].bouteilles_pleines - clients[k].consumption * t / 24 != 0:
+            clients[k].bouteilles_pleines -= clients[k].consumption * t / 24
+    return camions
