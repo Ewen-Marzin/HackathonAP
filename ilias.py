@@ -17,17 +17,17 @@ def évènements(camions):
     pq = []
     déplacements_camions=[[(camions[i][0],camions[i][1])] for i in range(100)]
     t=0
+    for i in range(100): #initialisation pour tous les camtards
+        (x1,y1) = camions[i][0],camions[i][1]
+        x = camions[i]
+        if x[4] == None : 
+            (x2,y2) = (clients[x[5]][0], clients[x[5]][1])
+        else : 
+            (y2,x2) = (usines[x[4]][0], usines[x[4]][1])
+        déplacements_camions[i].append((x2,y2))
+        y = distance(x1,y1,x2,y2)/v
+        heapq.heappush(y,i)
     while t < 30*24 : 
-        for i in range(100): #initialisation pour tous les camtards
-            (x1,y1) = camions[i][0],camions[i][1]
-            x = camions[i]
-            if x[4] == None : 
-                (x2,y2) = (clients[x[5]][0], clients[x[5]][1])
-            else : 
-                (y2,x2) = (usines[x[4]][0], usines[x[4]][1])
-            déplacements_camions[i].append((x2,y2))
-            y = distance(x1,y1,x2,y2)/v
-            heapq.heappush(y,i)
         (t,i) = heapq.heappop(pq)
         x = camions[i]
         (x1,y1) = camions[i][0],camions[i][1]
