@@ -1,3 +1,7 @@
+# AVERTISSEMENT : on a pas pu optimiser complètement l'étude. Cet algo ne fait pas non plus le calcul du coût total (c'est un détail ça pourrait se faire rapidement)  
+# Cet algo met en place toute la simulation en initialisant les camions d'une manière plutôt aléatoire. 
+# L'algo finit par renvoyer une liste de liste de couples où la i-ème liste représente l'ensemble des points (couples de coordonnées) visités par le i-ème camion.
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
