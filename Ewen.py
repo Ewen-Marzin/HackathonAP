@@ -59,24 +59,59 @@ def arrivée_camion(camion):
         if d == 0:
             camion[2] = 0
             camion[3] = max(80, plants[camion[4]].init)
-            m = 10 ^ 9
+            camion[4] = None
+            distance_client = 10 ^ 9
             for k in range(clients.shape[0]):
                 if (
-                    clients[k].status == 2
+                    clients[k].status == 1
                     and distance(
                         camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
                     )
-                    < m
+                    < distance_client
                 ):
                     camion[5] = k
-                    m = distance(
+                    distance_client = distance(
                         camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
                     )
+            clients[camion[5]].status = 2
+            return camion
 
     elif camion[4] == None and camion[5] != None:
         d = distance(
-            camion[0], camion[1], plants[camion[5]].coord_x, plants[camion[5]].coord_y
+            camion[0], camion[1], clients[camion[5]].coord_x, clients[camion[5]].coord_y
         )
         if d == 0:
-            camion[5] = None
+            camion[3] = min(0, camion[3] - 7 * clients[camion[5]].consumption)
+            camion[2] = max(80, camion[2] + 7 * clients[camion[5]].consumption)
+            if camion[3] == 0:
+                camion[5] = None
+                distance_usine = 10 ^ 9
+                for k in range(plants.shape[0]):
+                    if (
+                        distance(
+                            camion[0], camion[1], plants[k].coord_x, plants[k].coord_y
+                        )
+                        < distance_usine
+                    ):
+                        distance_usine = distance(
+                            camion[0], camion[1], plants[k].coord_x, plants[k].coord_y
+                        )
+                        camion[4] = k
+                return camion
+            if camion[3] != 0:
+                camion[4] = None
+                distance_client = 10 ^ 9
+                for k in range(clients.shape[0]):
+                    if (
+                        distance(
+                            camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
+                        )
+                        < distance_usine
+                    ):
+                        distance_usine = distance(
+                            camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
+                        )
+                        camion[5] = k
+                return camion
+
     return camion
