@@ -20,7 +20,7 @@ def évènements(camions):
     while t < 30*24 : 
         for i in range(100): #initialisation pour tous les camtards
             (x1,y1) = camions[i][0],camions[i][1]
-            x = arrivee_camion(camions[i])
+            x = camions[i]
             if x[4] == None : 
                 (x2,y2) = (clients[x[5]][0], clients[x[5]][1])
             else : 
@@ -29,7 +29,7 @@ def évènements(camions):
             y = distance(x1,y1,x2,y2)/v
             heapq.heappush(y,i)
         (t,i) = heapq.heappop(pq)
-        x = arrivee_camion(camions[i])
+        x = camions[i]
         (x1,y1) = camions[i][0],camions[i][1]
         if x[4] == None : 
             (x2,y2) = (clients[x[5]][0], clients[x[5]][1])
@@ -41,7 +41,7 @@ def évènements(camions):
         heapq.heappush(t,i)
     for i in range(100):
         (t,i) = heapq.heappop(pq)
-        x = arrivee_camion(camions[i])
+        x = camions[i]
         (x1,y1) = camions[i][0],camions[i][1]
         if x[4] == None : 
             (x2,y2) = (clients[x[5]][0], clients[x[5]][1])
