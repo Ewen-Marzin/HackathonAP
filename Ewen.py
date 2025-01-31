@@ -66,6 +66,8 @@ def mouvement_camion(camion, t):
 
 def arrivee_camion(camion):
     if camion[4] != None and camion[5] == None:
+        camion[0] = plants[camion[4]].coord_x
+        camion[1] = plants[camion[4]].coord_y
         camion[2] = 0
         camion[3] = max(80, plants[camion[4]].init)
         plants[camion[4]].init -= camion[3]
@@ -87,8 +89,10 @@ def arrivee_camion(camion):
             return camion
 
     elif camion[4] == None and camion[5] != None:
-        camion[3] = min(0, camion[3] - 7 * clients[camion[5]].consumption)
-        camion[2] = max(80, camion[2] + 7 * clients[camion[5]].consumption)
+        camion[0] = clients[camion[5]].coord_x
+        camion[1] = clients[camion[5]].coord_y
+        camion[3] = max(0, camion[3] - min(7 * clients[camion[5]].consumption, clients[camion[5]].capacity))
+        camion[2] = min(80, camion[2] + min(7 * clients[camion[5]].consumption, clients[camion[5]].capacity))
         if camion[3] == 0:
             camion[5] = None
             distance_usine = 10 ^ 9
@@ -106,7 +110,7 @@ def arrivee_camion(camion):
             camion[4] = None
             distance_client = 10 ^ 9
             for k in range(clients.shape[0]):
-                if (
+                if (clients[k].status == 1 and
                     distance(
                         camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
                     )
@@ -116,6 +120,7 @@ def arrivee_camion(camion):
                         camion[0], camion[1], clients[k].coord_x, clients[k].coord_y
                     )
                     camion[5] = k
+            clients[camion[5]].status = 2
             return camion
     return camion
 
@@ -136,3 +141,5 @@ def evolution(camions):
     for k in range(plants.shape[0]):
         if plants[k].init + plants[k].refill * t / 24 < plants[k].capacity:
             plants[k].init = plants[k].init + plants[k].refill * t / 24
+    for k in range(clients.shape[0]):
+        if clients[k].
