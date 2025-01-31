@@ -13,6 +13,14 @@ def map ():
     plt.scatter(X,Y, label ="Usines")
     plt.show()
 
+def charger_donnees(fichier):
+    instances = []
+    with open(fichier, newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        next(reader)  # Ignorer l'en-tête
+        for ligne in reader:
+            instances.append((float(ligne[0]), float(ligne[1]), int(ligne[2]), int(ligne[3]), int(ligne[4])))
+    return instances
 
 pg.init()
 clock = pg.time.Clock()
