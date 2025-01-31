@@ -8,12 +8,13 @@ clients["statut"] = 1
 
 # utilisation d'une file de priorité pour lister les différents évènements 
 
-v=0.05
+v=0.05 # vitesse en km/h
 
 def évènements(camions):
     pq = []
+    déplacements_camions=[[(camions[i][0],camions[i][1])] for i in range(100)]
     t=0
-    while t < 30*24*3600 : 
+    while t < 30*24 : 
         for i in range(100): #initialisation pour tous les camtards
             (x1,y1) = camions[i][0],camions[i][1]
             x = arrivee_camion(camions[i])
@@ -21,6 +22,7 @@ def évènements(camions):
                 (x2,y2) = (clients[x[5]][0], clients[x[5]][1])
             else : 
                 (y2,x2) = (usines[x[4]][0], usines[x[4]][1])
+            déplacements_camions[i].append((x2,y2))
             y = distance(x1,y1,x2,y2)/v
             heapq.heappush(y,i)
         (t,i) = heapq.heappop(pq)
@@ -33,4 +35,5 @@ def évènements(camions):
         y = distance(x1,y1,x2,y2)/v
         t+= y
         heapq.heappush(t,i)
-    return "finitooooo"
+    print("finitooooooo")
+    return déplacements_camions
